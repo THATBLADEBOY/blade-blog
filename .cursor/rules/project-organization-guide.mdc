@@ -1,0 +1,110 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Generalized Guide to Project Organization
+
+## Root Level
+
+```
+/
+├── app/                # Next.js App Router: routes, layouts, pages, route-specific components
+├── components/         # Shared React components (non-route-specific)
+│   └── ui/             # UI primitives (buttons, cards, etc.)
+├── content/            # Static/MDX content, organized by topic or section
+├── hooks/              # Custom React hooks
+├── lib/                # Utility functions, business logic, API clients (single-responsibility modules)
+├── public/             # Static assets (images, fonts, etc.)
+├── styles/             # (Optional) Global styles, Tailwind config, etc.
+├── .vscode/            # Editor settings (optional)
+├── .git/               # Git repository data
+├── package.json        # Project metadata and scripts
+├── tsconfig.json       # TypeScript configuration
+├── next.config.ts      # Next.js configuration
+├── README.md           # Project overview and instructions
+└── ...                 # Other config files (.env, .prettierrc, etc.)
+```
+
+## `app/` Directory
+
+- **Route Segments:** Each folder = a route. Use `(group)` for logical grouping, `[param]` for dynamic routes.
+- **Colocation:** Place route-specific components in a `components/` subfolder within the route.
+- **Layouts:** Use `layout.tsx` for shared layout logic per route/segment.
+- **Pages:** Use `page.tsx` for route entry points.
+- **API Routes:** If needed, use `api/` subfolders.
+
+**Example:**
+```
+app/
+├── layout.tsx
+├── globals.css
+├── (home)/
+│   ├── page.tsx
+│   └── components/
+│       └── home-page.tsx
+├── blog/
+│   ├── page.tsx
+│   └── [slug]/
+│       ├── page.tsx
+│       └── layout.tsx
+└── uses/
+    └── page.tsx
+```
+
+## `components/` Directory
+
+- **Shared Components:** For use across multiple routes/pages.
+- **UI Primitives:** Place atomic, reusable UI elements in `components/ui/`.
+- **Naming:** Use descriptive, domain-specific names.
+
+## `content/` Directory
+
+- **MDX/Static Content:** Organize by topic or section.
+- **Naming:** Use kebab-case for folders.
+
+## `lib/` Directory
+
+- **Utilities:** General-purpose functions, business logic, API clients.
+- **Single Responsibility:** Each utility function or logical group should be in its own file (e.g., `format-date.ts`, `get-blog-posts.ts`). Avoid catch-all files like `blog-post-utils.ts`.
+- **Colocate Types:** Place related interfaces/types in their own file (e.g., `blog-post-metadata.ts`) and import where needed.
+- **Naming:** Use descriptive names (e.g., `estimate-read-time.ts`, `parse-frontmatter.ts`).
+
+## `hooks/` Directory
+
+- **Custom Hooks:** One file per hook, named as `useXyz.ts`.
+
+## `public/` Directory
+
+- **Static Assets:** Images, PDFs, favicon, etc.
+
+---
+
+## Best Practices
+
+- **TypeScript everywhere:** Use interfaces, avoid `any`, prefer type inference.
+- **Colocate when possible:** Keep related files together for discoverability.
+- **Single-responsibility utilities:** Each utility in `lib/` should be its own module. Do not group unrelated utilities in a single file.
+- **Minimize client code:** Use RSCs by default, add `"use client"` only when needed.
+- **Consistent naming:** Use kebab-case for folders, kebab-case for files, PascalCase for components.
+- **Tailwind for styling:** Use theme variables, keep styles minimal and consistent.
+- **Documentation:** Add JSDoc comments to all modules and functions.
+
+---
+
+## Summary Table
+
+| Directory      | Purpose                                      | Example Contents                |
+|----------------|----------------------------------------------|---------------------------------|
+| `app/`         | Routing, layouts, route-specific components  | `page.tsx`, `layout.tsx`        |
+| `components/`  | Shared components                            | `theme-switcher.tsx`, `ui/`     |
+| `content/`     | Static/MDX content                           | `my-topic/`, `post.mdx`         |
+| `lib/`         | Utilities, business logic                    | `format-date.ts`, `get-blog-posts.ts`, `blog-post-metadata.ts` |
+| `hooks/`       | Custom React hooks                           | `useClickOutside.ts`            |
+| `public/`      | Static assets                                | `cover.jpg`, `favicon.ico`      |
+
+---
+
+**This structure is scalable, maintainable, and aligns with modern Next.js and React best practices.** 
+
+If anything is unclear about best practices with a technology, please use context7 to look into the documentation directly.

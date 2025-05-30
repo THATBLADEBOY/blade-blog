@@ -1,0 +1,133 @@
+---
+title: 'Embedding vs. Referencing Mongo Models: A Decision Card'
+publishedAt: '2025-05-27'
+summary: 'When should you embed a Mongo model vs. reference it? When is the $lookup worth it?'
+tags: ['mongodb']
+---
+
+One of the most common decisions when designing MongoDB schemas is whether to
+embed related data or reference it. This decision card provides a systematic
+approach to making that choice.
+
+## How to Use This Decision Card
+
+For each guideline, answer the question and note whether it favors **Embed** or
+**Reference**. Add up the points to get your initial direction:
+
+- **Embed**: +1 point
+- **Reference**: +1 point
+
+However, **some guidelines are deal-breakers** that override the point system
+entirely. Pay special attention to guidelines marked as potential overrides.
+
+## The Decision Table
+
+<Table
+  data={{
+    headers: ['Guideline Name', 'Question', 'Embed', 'Reference'],
+    rows: [
+      [
+        <strong>Simplicity</strong>,
+        'Would keeping the pieces of information together lead to a simpler data model and code?',
+        'Yes',
+        'No',
+      ],
+      [
+        <strong>Go Together</strong>,
+        'Do the pieces of information have a "has-a," "contains," or similar relationship?',
+        'Yes',
+        'No',
+      ],
+      [
+        <strong>Query Atomicity</strong>,
+        'Does the application query the pieces of information together?',
+        'Yes',
+        'No',
+      ],
+      [
+        <strong>Update Complexity</strong>,
+        'Are the pieces of information updated together?',
+        'Yes',
+        'No',
+      ],
+      [
+        <strong>Archival</strong>,
+        'Should the pieces of information be archived at the same time?',
+        'Yes',
+        'No',
+      ],
+      [
+        <strong>Cardinality</strong>,
+        'Is there a high cardinality (current or growing) in the child side of the relationship?',
+        'No',
+        'Yes',
+      ],
+      [
+        <strong>Data Duplication</strong>,
+        'Would data duplication be too complicated to manage and undesired?',
+        'No',
+        'Yes',
+      ],
+      [
+        <strong>Document Size</strong>,
+        'Would the combined size of the pieces of information take too much memory or transfer bandwidth for the application?',
+        'No',
+        'Yes',
+      ],
+      [
+        <strong>Document Growth</strong>,
+        'Would the embedded piece grow without bound?',
+        'No',
+        'Yes',
+      ],
+      [
+        <strong>Workload</strong>,
+        'Are the pieces of information written at different times in a write-heavy workload?',
+        'No',
+        'Yes',
+      ],
+      [
+        <strong>Individuality</strong>,
+        'For the children side of the relationship, can the pieces exist by themselves without a parent?',
+        'No',
+        'Yes',
+      ],
+    ],
+  }}
+  columnWidths={['25%', '55%', '10%', '10%']}
+/>
+
+## Critical Override Scenarios
+
+While the point system provides guidance, certain scenarios should override your
+score:
+
+### 🚨 **Document Growth** (Automatic Reference)
+
+If there's any possibility of unbounded array growth, **always reference**.
+MongoDB has a 16MB document limit, and unbounded arrays will eventually hit this
+ceiling, causing application failures.
+
+**Example**: User comments on a viral post could grow indefinitely.
+
+### 🚨 **High Cardinality** (Strong Reference Signal)
+
+When the child side has high cardinality (thousands+ of related documents),
+embedding becomes impractical and expensive.
+
+**Example**: A product with thousands of reviews should reference reviews, not
+embed them.
+
+### 🚨 **Document Size** (Performance Override)
+
+If embedded documents would regularly exceed a few MB, the performance cost of
+loading large documents often outweighs embedding benefits.
+
+## Quick Decision Framework
+
+1. **Check for deal-breakers first**: Unbounded growth, high cardinality, or
+   large document sizes
+2. **If no deal-breakers**: Tally your embed vs. reference points
+3. **Consider your access patterns**: How often do you need the related data?
+4. **When in doubt**: Start with referencing - it's easier to optimize later
+   than to fix broken schemas

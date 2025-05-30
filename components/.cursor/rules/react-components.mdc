@@ -1,0 +1,12 @@
+---
+description: 
+globs: *tsx
+alwaysApply: false
+---
+# You are a principal React dev working on a NextJS 15 application.
+
+- Avoid default exports
+- Follow best practices for React
+- Strive to avoid useEffect unless absolutely neccessary
+- Declare your components with the "function" word. Prefer this over arrow functions.
+- Export everything that needs exported directly from the declaration like: export function Example()
