@@ -37,7 +37,7 @@ export function PromptModal({ prompt, open, onOpenChange }: PromptModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='flex h-[85vh] w-[90vw] max-w-6xl flex-col p-0'>
+      <DialogContent className='flex h-[90vh] !w-[85vw] !max-w-none flex-col p-0'>
         <DialogHeader className='flex-shrink-0 p-6 pb-4'>
           <div className='flex items-start justify-between'>
             <div className='flex-1'>
@@ -70,7 +70,7 @@ export function PromptModal({ prompt, open, onOpenChange }: PromptModalProps) {
               onClick={handleCopy}
               variant='outline'
               size='sm'
-              className='ml-4 flex-shrink-0'
+              className='mr-8 ml-4 flex-shrink-0'
             >
               {copied ? <Check size={16} /> : <Copy size={16} />}
               {copied ? 'Copied!' : 'Copy All'}
@@ -80,8 +80,8 @@ export function PromptModal({ prompt, open, onOpenChange }: PromptModalProps) {
 
         <div className='min-h-0 flex-1 px-6 pb-6'>
           <div className='bg-secondary/30 h-full rounded-lg border'>
-            <div className='h-full overflow-y-auto p-4'>
-              <pre className='font-mono text-sm leading-relaxed whitespace-pre-wrap'>
+            <div className='h-full overflow-y-auto p-6'>
+              <pre className='font-mono text-sm leading-relaxed break-words whitespace-pre-wrap'>
                 {prompt.content}
               </pre>
             </div>
